@@ -16,6 +16,7 @@ import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { Toaster } from "@/components/ui/sonner";
 import { Bell } from "lucide-react";
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 
 interface Item {
   id: string;
@@ -34,6 +35,17 @@ export default function CadastroDID() {
   const [mainStep, setMainStep] = useState(1); // Step principal da página
   const [items, setItems] = useState<Item[]>([]);
   const [currentItem, setCurrentItem] = useState<Partial<Item>>({});
+  const [savedMessages, setSavedMessages] = useState<string[]>([
+    'Valor a ser empenhado para atender despesas com aquisição de material de consumo',
+    'Valor a ser empenhado para atender despesas com contratação de serviços terceirizados',
+    'Valor a ser empenhado para atender despesas com manutenção e conservação de equipamentos',
+    'Valor a ser empenhado para atender despesas com combustíveis e lubrificantes',
+    'Valor a ser empenhado para atender despesas com material de limpeza e higienização',
+    'Valor a ser empenhado para atender despesas com material de expediente',
+    'Valor a ser empenhado para atender despesas com serviços de telefonia e internet',
+    'Valor a ser empenhado para atender despesas com energia elétrica'
+  ]);
+  const [showMessageHistory, setShowMessageHistory] = useState(false);
   const [formData, setFormData] = useState({
     processo: '',
     unidadeOrcamentaria: '',
@@ -175,10 +187,15 @@ export default function CadastroDID() {
     );
   };
 
+  const selectMessage = (message: string) => {
+    setFormData(prev => ({ ...prev, descricao: message }));
+    setShowMessageHistory(false);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Header */}
-      <div className="bg-white shadow-sm border-b border-slate-200">
+      <div className="bg-white dark:bg-slate-900 shadow-sm border-b border-slate-200 dark:border-slate-700">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -186,19 +203,20 @@ export default function CadastroDID() {
                 <FileText className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-900">FluxusWeb</h1>
-                <p className="text-sm text-slate-600">PREFEITURA DE BATURITÊ</p>
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-white">FluxusWeb</h1>
+                <p className="text-sm text-slate-600 dark:text-slate-300">PREFEITURA DE BATURITÊ</p>
               </div>
             </div>
 
             <div className="flex items-center space-x-4">
-              <div className="flex flex-col text-sm text-slate-600">
+              <ThemeToggle />
+              <div className="flex flex-col text-sm text-slate-600 dark:text-slate-300">
                 <span>Exercício 2025</span>
                 <span>Bem vindo, (usuário)</span>
               </div>
 
               <div className="relative">
-                <Bell className="h-6 w-6 text-slate-600" />
+                <Bell className="h-6 w-6 text-slate-600 dark:text-slate-300" />
                 <span className="absolute -top-2 -right-2 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-red-500 rounded-full">
                   5
                 </span>
@@ -213,8 +231,8 @@ export default function CadastroDID() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h2 className="text-3xl font-bold text-slate-900 mb-2">Cadastro DID</h2>
-              <p className="text-slate-600">
+              <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Cadastro DID</h2>
+              <p className="text-slate-600 dark:text-slate-300">
                 {mainStep === 1 
                   ? "Preencha os campos abaixo para registrar um novo Documento de Despesa"
                   : "Adicione os itens que compõem este DID"
@@ -224,21 +242,21 @@ export default function CadastroDID() {
           </div>
 
           {/* Indicador de Steps Principal */}
-          <div className="flex items-center justify-center space-x-8 mb-8 bg-white p-6 rounded-lg shadow-sm">
+          <div className="flex items-center justify-center space-x-8 mb-8 bg-white dark:bg-slate-800 p-6 rounded-lg shadow-sm">
             <div className="flex items-center space-x-3">
               <MainStepIndicator step={1} currentStep={mainStep} />
               <div className="text-center">
-                <span className={`text-sm font-medium block ${mainStep >= 1 ? 'text-slate-900' : 'text-slate-400'}`}>
+                <span className={`text-sm font-medium block ${mainStep >= 1 ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>
                   Dados do DID
                 </span>
                 <span className="text-xs text-slate-500">Informações básicas</span>
               </div>
             </div>
-            <div className="w-16 h-px bg-slate-300"></div>
+            <div className="w-16 h-px bg-slate-300 dark:bg-slate-600"></div>
             <div className="flex items-center space-x-3">
               <MainStepIndicator step={2} currentStep={mainStep} />
               <div className="text-center">
-                <span className={`text-sm font-medium block ${mainStep >= 2 ? 'text-slate-900' : 'text-slate-400'}`}>
+                <span className={`text-sm font-medium block ${mainStep >= 2 ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>
                   Inclusão de Itens
                 </span>
                 <span className="text-xs text-slate-500">Adicionar produtos/serviços</span>
@@ -249,13 +267,13 @@ export default function CadastroDID() {
 
         {/* Conteúdo baseado no step atual */}
         {mainStep === 1 && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Coluna Principal - Formulário */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-1 space-y-6">
               {/* Informações Básicas */}
-              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <Card className="shadow-lg border-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center space-x-2 text-slate-800">
+                  <CardTitle className="flex items-center space-x-2 text-slate-800 dark:text-white">
                     <Info className="h-5 w-5 text-blue-600" />
                     <span>Informações Básicas</span>
                   </CardTitle>
@@ -263,20 +281,20 @@ export default function CadastroDID() {
                 <CardContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="processo" className="text-sm font-semibold text-slate-700">
+                      <Label htmlFor="processo" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                         Processo *
                       </Label>
                       <Input
                         id="processo"
                         value={formData.processo}
                         onChange={(e) => handleInputChange('processo', e.target.value)}
-                        className="h-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20"
+                        className="h-12 border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 dark:bg-slate-700 dark:text-white"
                         placeholder="Número do processo"
                       />
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="unidadeOrcamentaria" className="text-sm font-semibold text-slate-700">
+                      <Label htmlFor="unidadeOrcamentaria" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                         Unidade Orçamentária *
                       </Label>
                       <div className="relative">
@@ -284,7 +302,7 @@ export default function CadastroDID() {
                           id="unidadeOrcamentaria"
                           value={formData.unidadeOrcamentaria}
                           onChange={(e) => handleInputChange('unidadeOrcamentaria', e.target.value)}
-                          className="h-12 pr-10 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20"
+                          className="h-12 pr-10 border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 dark:bg-slate-700 dark:text-white"
                         />
                         <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                       </div>
@@ -292,7 +310,7 @@ export default function CadastroDID() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="fornecedor" className="text-sm font-semibold text-slate-700">
+                    <Label htmlFor="fornecedor" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                       Fornecedor *
                     </Label>
                     <div className="relative">
@@ -301,7 +319,7 @@ export default function CadastroDID() {
                         id="fornecedor"
                         value={formData.fornecedor}
                         onChange={(e) => handleInputChange('fornecedor', e.target.value)}
-                        className="h-12 pl-10 pr-10 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20"
+                        className="h-12 pl-10 pr-10 border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 dark:bg-slate-700 dark:text-white"
                         placeholder="Nome do fornecedor"
                       />
                       <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -309,7 +327,7 @@ export default function CadastroDID() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="valorDID" className="text-sm font-semibold text-slate-700">
+                    <Label htmlFor="valorDID" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                       Valor do DID (Caso não possua contrato)
                     </Label>
                     <div className="relative">
@@ -319,7 +337,7 @@ export default function CadastroDID() {
                         type="number"
                         value={formData.valorDID}
                         onChange={(e) => handleInputChange('valorDID', e.target.value)}
-                        className="h-12 pl-10 pr-10 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20"
+                        className="h-12 pl-10 pr-10 border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 dark:bg-slate-700 dark:text-white"
                         placeholder="Insira o valor do DID"
                       />
                     </div>
@@ -327,12 +345,12 @@ export default function CadastroDID() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label className="text-sm font-semibold text-slate-700">Modalidade</Label>
+                      <Label className="text-sm font-semibold text-slate-700 dark:text-slate-200">Modalidade</Label>
                       <Select
                         value={formData.modalidade}
                         onValueChange={(value) => handleInputChange('modalidade', value)}
                       >
-                        <SelectTrigger className="h-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20">
+                        <SelectTrigger className="h-12 border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 dark:bg-slate-700 dark:text-white">
                           <SelectValue placeholder="Selecione a modalidade" />
                         </SelectTrigger>
                         <SelectContent>
@@ -344,7 +362,7 @@ export default function CadastroDID() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="contrato" className="text-sm font-semibold text-slate-700">
+                      <Label htmlFor="contrato" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                         Contrato
                       </Label>
                       <div className="relative">
@@ -352,7 +370,7 @@ export default function CadastroDID() {
                           id="contrato"
                           value={formData.contrato}
                           onChange={(e) => handleInputChange('contrato', e.target.value)}
-                          className="h-12 pr-10 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20"
+                          className="h-12 pr-10 border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 dark:bg-slate-700 dark:text-white"
                           placeholder="Número do contrato"
                         />
                         <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -363,9 +381,9 @@ export default function CadastroDID() {
               </Card>
 
               {/* Informações Orçamentárias */}
-              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <Card className="shadow-lg border-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center space-x-2 text-slate-800">
+                  <CardTitle className="flex items-center space-x-2 text-slate-800 dark:text-white">
                     <Building className="h-5 w-5 text-blue-600" />
                     <span>Informações Orçamentárias</span>
                   </CardTitle>
@@ -373,24 +391,24 @@ export default function CadastroDID() {
                 <CardContent className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="dotacao" className="text-sm font-semibold text-slate-700">
+                      <Label htmlFor="dotacao" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                         Dotação *
                       </Label>
                       <Input
                         id="dotacao"
                         value={formData.dotacao}
                         onChange={(e) => handleInputChange('dotacao', e.target.value)}
-                        className="h-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20"
+                        className="h-12 border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 dark:bg-slate-700 dark:text-white"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <Label className="text-sm font-semibold text-slate-700">Data *</Label>
+                      <Label className="text-sm font-semibold text-slate-700 dark:text-slate-200">Data *</Label>
                       <Popover>
                         <PopoverTrigger asChild>
                           <Button
                             variant="outline"
-                            className="h-12 w-full justify-start text-left font-normal border-slate-300 hover:border-blue-500"
+                            className="h-12 w-full justify-start text-left font-normal border-slate-300 dark:border-slate-600 hover:border-blue-500 dark:bg-slate-700 dark:text-white"
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
                             {date ? format(date, 'dd/MM/yyyy', { locale: ptBR }) : '09/09/2025'}
@@ -409,7 +427,7 @@ export default function CadastroDID() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="centroCusto" className="text-sm font-semibold text-slate-700">
+                    <Label htmlFor="centroCusto" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                       Centro de Custo
                     </Label>
                     <div className="relative">
@@ -417,7 +435,7 @@ export default function CadastroDID() {
                         id="centroCusto"
                         value={formData.centroCusto}
                         onChange={(e) => handleInputChange('centroCusto', e.target.value)}
-                        className="h-12 pr-10 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20"
+                        className="h-12 pr-10 border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 dark:bg-slate-700 dark:text-white"
                       />
                       <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                     </div>
@@ -426,23 +444,49 @@ export default function CadastroDID() {
               </Card>
 
               {/* Descrição */}
-              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <Card className="shadow-lg border-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center space-x-2 text-slate-800">
-                    <FileText className="h-5 w-5 text-blue-600" />
-                    <span>Descrição da Despesa</span>
+                  <CardTitle className="flex items-center justify-between text-slate-800 dark:text-white">
+                    <div className="flex items-center space-x-2">
+                      <FileText className="h-5 w-5 text-blue-600" />
+                      <span>Descrição da Despesa</span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowMessageHistory(!showMessageHistory)}
+                      className="text-xs"
+                    >
+                      Histórico
+                    </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
+                  {showMessageHistory && (
+                    <div className="mb-4 p-4 bg-slate-50 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600">
+                      <h4 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-3">Mensagens Salvas:</h4>
+                      <div className="space-y-2 max-h-40 overflow-y-auto">
+                        {savedMessages.map((message, index) => (
+                          <button
+                            key={index}
+                            onClick={() => selectMessage(message)}
+                            className="w-full text-left p-2 text-xs bg-white dark:bg-slate-600 hover:bg-blue-50 dark:hover:bg-slate-500 rounded border border-slate-200 dark:border-slate-500 text-slate-600 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-300 transition-colors"
+                          >
+                            {message}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                   <div className="space-y-2">
-                    <Label htmlFor="descricao" className="text-sm font-semibold text-slate-700">
+                    <Label htmlFor="descricao" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                       Valor a ser empenhado para atender despesas com: *
                     </Label>
                     <Textarea
                       id="descricao"
                       value={formData.descricao}
                       onChange={(e) => handleInputChange('descricao', e.target.value)}
-                      className="min-h-[120px] border-slate-300 focus:border-blue-500 focus:ring-blue-500/20 resize-none"
+                      className="min-h-[120px] border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 resize-none dark:bg-slate-700 dark:text-white"
                       placeholder="Descreva detalhadamente o objeto da despesa..."
                     />
                     <div className="text-xs text-slate-500 mt-1">
@@ -455,7 +499,45 @@ export default function CadastroDID() {
 
             {/* Sidebar */}
             <div className="space-y-6 lg:sticky lg:top-6">
-              {/* Resumo Financeiro */}
+              {/* Informações Complementares */}
+              <Card className="shadow-lg border-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-slate-800 dark:text-white">Informações do Sistema</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm">
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-slate-600 dark:text-slate-300">Licitação:</span>
+                      <span className="font-medium text-slate-800 dark:text-white">-</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-600 dark:text-slate-300">Contrato:</span>
+                      <span className="font-medium text-slate-800 dark:text-white">-</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-slate-600 dark:text-slate-300">Tipo de Aquisição:</span>
+                      <span className="font-medium text-slate-800 dark:text-white">Global</span>
+                    </div>
+                  </div>
+                  
+                  <div className="pt-4 border-t border-slate-200 dark:border-slate-600">
+                    <div className="text-xs text-slate-500 space-y-1">
+                      <p>0001 - GERENCIAMENTO E CONTROLE DA DÍVIDA PÚBLICA MUNICIPAL</p>
+                      <p>3.2.90.21.00 - Juros sobre a Dívida por Contrato</p>
+                      <p>1500000000 - Recursos não vinculados de Impostos</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+
+        {mainStep === 2 && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Coluna Principal - Lista de Itens */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Resumo Financeiro - Movido para o Step 2 */}
               <Card className="shadow-lg border-0 bg-gradient-to-br from-blue-600 to-blue-700 text-white">
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center space-x-2">
@@ -474,57 +556,25 @@ export default function CadastroDID() {
                       <span className="text-blue-100">Valor do DID:</span>
                       <span className="font-bold text-xl">R$ {formData.valorDID}</span>
                     </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-blue-100">Total dos Itens:</span>
+                      <span className="font-bold text-xl">{formatCurrencyDisplay(getTotalItems())}</span>
+                    </div>
                   </div>
                   
                   <div className="mt-6 p-4 bg-white/10 backdrop-blur-sm rounded-lg">
                     <div className="text-sm text-blue-100 mb-2">Saldo Restante:</div>
-                    <div className="text-2xl font-bold">R$ 0,00</div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Informações Complementares */}
-              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-slate-800">Informações do Sistema</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4 text-sm">
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Licitação:</span>
-                      <span className="font-medium text-slate-800">-</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Contrato:</span>
-                      <span className="font-medium text-slate-800">-</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-slate-600">Tipo de Aquisição:</span>
-                      <span className="font-medium text-slate-800">Global</span>
-                    </div>
-                  </div>
-                  
-                  <div className="pt-4 border-t border-slate-200">
-                    <div className="text-xs text-slate-500 space-y-1">
-                      <p>0001 - GERENCIAMENTO E CONTROLE DA DÍVIDA PÚBLICA MUNICIPAL</p>
-                      <p>3.2.90.21.00 - Juros sobre a Dívida por Contrato</p>
-                      <p>1500000000 - Recursos não vinculados de Impostos</p>
+                    <div className="text-2xl font-bold">
+                      {formatCurrencyDisplay((parseFloat(formData.valorDID) || 0) - getTotalItems())}
                     </div>
                   </div>
                 </CardContent>
               </Card>
-            </div>
-          </div>
-        )}
 
-        {mainStep === 2 && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Coluna Principal - Lista de Itens */}
-            <div className="lg:col-span-2 space-y-6">
               {/* Itens do DID */}
-              <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <Card className="shadow-lg border-0 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center justify-between text-slate-800">
+                  <CardTitle className="flex items-center justify-between text-slate-800 dark:text-white">
                     <div className="flex items-center space-x-2">
                       <Package className="h-5 w-5 text-blue-600" />
                       <span>Itens do DID</span>
@@ -536,7 +586,7 @@ export default function CadastroDID() {
                 </CardHeader>
                 <CardContent>
                   {items.length === 0 ? (
-                    <div className="text-center py-12 text-slate-500">
+                    <div className="text-center py-12 text-slate-500 dark:text-slate-400">
                       <Package className="h-16 w-16 mx-auto mb-4 text-slate-300" />
                       <p className="text-xl font-medium mb-2">Nenhum item adicionado</p>
                       <p className="text-sm mb-6">Clique em "Adicionar Item" para incluir itens ao DID</p>
@@ -551,19 +601,19 @@ export default function CadastroDID() {
                   ) : (
                     <div className="space-y-4">
                       {items.map((item, index) => (
-                        <div key={item.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200">
+                        <div key={item.id} className="flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600">
                           <div className="flex-1">
                             <div className="flex items-center space-x-3 mb-2">
                               <Badge variant="outline" className="text-xs">
                                 {String(index + 1).padStart(3, '0')}
                               </Badge>
-                              <span className="font-medium text-slate-900">{item.codigo}</span>
+                              <span className="font-medium text-slate-900 dark:text-white">{item.codigo}</span>
                             </div>
-                            <p className="text-sm text-slate-600 mb-2">{item.descricao}</p>
+                            <p className="text-sm text-slate-600 dark:text-slate-300 mb-2">{item.descricao}</p>
                             <div className="flex items-center space-x-4 text-xs text-slate-500">
                               <span>Qtd: {item.quantidade} {item.unidade}</span>
                               <span>Valor Unit.: {formatCurrencyDisplay(item.valorUnitario)}</span>
-                              <span className="font-semibold text-slate-700">
+                              <span className="font-semibold text-slate-700 dark:text-slate-200">
                                 Total: {formatCurrencyDisplay(item.valorTotal)}
                               </span>
                             </div>
@@ -579,8 +629,8 @@ export default function CadastroDID() {
                         </div>
                       ))}
                       
-                      <div className="flex justify-between items-center pt-4 border-t border-slate-200">
-                        <span className="font-semibold text-slate-700">Total dos Itens:</span>
+                      <div className="flex justify-between items-center pt-4 border-t border-slate-200 dark:border-slate-600">
+                        <span className="font-semibold text-slate-700 dark:text-slate-200">Total dos Itens:</span>
                         <span className="text-xl font-bold text-blue-600">
                           {formatCurrencyDisplay(getTotalItems())}
                         </span>
@@ -605,7 +655,7 @@ export default function CadastroDID() {
             {/* Sidebar - Resumo */}
             <div className="space-y-6 lg:sticky lg:top-6">
               {/* Resumo do DID */}
-              <Card className="shadow-lg border-0 bg-gradient-to-br from-green-600 to-green-700 text-white">
+              <Card className="shadow-lg border-0 bg-gradient-to-br from-green-600 to-green-700 text-white dark:from-green-700 dark:to-green-800">
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center space-x-2">
                     <FileText className="h-5 w-5" />
@@ -645,7 +695,7 @@ export default function CadastroDID() {
               <Button 
                 variant="outline" 
                 onClick={() => setMainStep(1)}
-                className="h-12 px-8 border-slate-300 text-slate-600 hover:bg-slate-50 hover:border-slate-400"
+                className="h-12 px-8 border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 hover:border-slate-400"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Voltar aos Dados
@@ -656,7 +706,7 @@ export default function CadastroDID() {
           <div className="flex space-x-4">
             <Button 
               variant="outline" 
-              className="h-12 px-8 border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400"
+              className="h-12 px-8 border-red-300 dark:border-red-600 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 hover:border-red-400"
             >
               Cancelar
             </Button>
@@ -684,9 +734,9 @@ export default function CadastroDID() {
 
       {/* Modal de Inclusão de Itens */}
       <Dialog open={showItemsModal} onOpenChange={setShowItemsModal}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto dark:bg-slate-800">
           <DialogHeader>
-            <DialogTitle className="flex items-center space-x-2 text-xl">
+            <DialogTitle className="flex items-center space-x-2 text-xl dark:text-white">
               <Package className="h-6 w-6 text-blue-600" />
               <span>Inclusão de Itens - DID</span>
             </DialogTitle>
@@ -697,21 +747,21 @@ export default function CadastroDID() {
             <div className="flex items-center justify-center space-x-8 mb-8">
               <div className="flex items-center space-x-2">
                 <ItemStepIndicator step={1} currentStep={currentItemStep} />
-                <span className={`text-sm font-medium ${currentItemStep >= 1 ? 'text-slate-900' : 'text-slate-400'}`}>
+                <span className={`text-sm font-medium ${currentItemStep >= 1 ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>
                   Identificação
                 </span>
               </div>
               <div className="w-12 h-px bg-slate-300"></div>
               <div className="flex items-center space-x-2">
                 <ItemStepIndicator step={2} currentStep={currentItemStep} />
-                <span className={`text-sm font-medium ${currentItemStep >= 2 ? 'text-slate-900' : 'text-slate-400'}`}>
+                <span className={`text-sm font-medium ${currentItemStep >= 2 ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>
                   Quantidades
                 </span>
               </div>
               <div className="w-12 h-px bg-slate-300"></div>
               <div className="flex items-center space-x-2">
                 <ItemStepIndicator step={3} currentStep={currentItemStep} />
-                <span className={`text-sm font-medium ${currentItemStep >= 3 ? 'text-slate-900' : 'text-slate-400'}`}>
+                <span className={`text-sm font-medium ${currentItemStep >= 3 ? 'text-slate-900 dark:text-white' : 'text-slate-400'}`}>
                   Confirmação
                 </span>
               </div>
@@ -720,15 +770,15 @@ export default function CadastroDID() {
             {/* Step Content */}
             <div className="min-h-[400px]">
               {currentItemStep === 1 && (
-                <Card className="border-0 shadow-sm">
+                <Card className="border-0 shadow-sm dark:bg-slate-700">
                   <CardHeader>
-                    <CardTitle className="text-lg text-slate-800">Identificação do Item</CardTitle>
-                    <p className="text-sm text-slate-600">Informe o código e descrição do item</p>
+                    <CardTitle className="text-lg text-slate-800 dark:text-white">Identificação do Item</CardTitle>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">Informe o código e descrição do item</p>
                   </CardHeader>
                   <CardContent className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <Label htmlFor="codigo" className="text-sm font-semibold text-slate-700">
+                        <Label htmlFor="codigo" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                           Código do Item *
                         </Label>
                         <div className="relative">
@@ -736,7 +786,7 @@ export default function CadastroDID() {
                             id="codigo"
                             value={currentItem.codigo || ''}
                             onChange={(e) => handleItemChange('codigo', e.target.value)}
-                            className="h-12 pr-10 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20"
+                            className="h-12 pr-10 border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 dark:bg-slate-600 dark:text-white"
                             placeholder="Ex: 001.001.001"
                           />
                           <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
@@ -744,12 +794,12 @@ export default function CadastroDID() {
                       </div>
 
                       <div className="space-y-2">
-                        <Label className="text-sm font-semibold text-slate-700">Unidade</Label>
+                        <Label className="text-sm font-semibold text-slate-700 dark:text-slate-200">Unidade</Label>
                         <Select 
                           value={currentItem.unidade || 'UN'} 
                           onValueChange={(value) => handleItemChange('unidade', value)}
                         >
-                          <SelectTrigger className="h-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20">
+                          <SelectTrigger className="h-12 border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 dark:bg-slate-600 dark:text-white">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -767,22 +817,22 @@ export default function CadastroDID() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="descricaoItem" className="text-sm font-semibold text-slate-700">
+                      <Label htmlFor="descricaoItem" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                         Descrição do Item *
                       </Label>
                       <Textarea
                         id="descricaoItem"
                         value={currentItem.descricao || ''}
                         onChange={(e) => handleItemChange('descricao', e.target.value)}
-                        className="min-h-[100px] border-slate-300 focus:border-blue-500 focus:ring-blue-500/20 resize-none"
+                        className="min-h-[100px] border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 resize-none dark:bg-slate-600 dark:text-white"
                         placeholder="Descreva detalhadamente o item a ser adquirido..."
                       />
                     </div>
 
-                    <div className="bg-blue-50 p-4 rounded-lg">
+                    <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
                       <div className="flex items-start space-x-3">
                         <Info className="h-5 w-5 text-blue-600 mt-0.5" />
-                        <div className="text-sm text-blue-800">
+                        <div className="text-sm text-blue-800 dark:text-blue-200">
                           <p className="font-medium mb-1">Dica:</p>
                           <p>Use o botão de busca para localizar itens já cadastrados no sistema ou digite manualmente as informações do novo item.</p>
                         </div>
@@ -793,23 +843,23 @@ export default function CadastroDID() {
               )}
 
               {currentItemStep === 2 && (
-                <Card className="border-0 shadow-sm">
+                <Card className="border-0 shadow-sm dark:bg-slate-700">
                   <CardHeader>
-                    <CardTitle className="text-lg text-slate-800">Quantidades e Valores</CardTitle>
-                    <p className="text-sm text-slate-600">Defina a quantidade e valor unitário do item</p>
+                    <CardTitle className="text-lg text-slate-800 dark:text-white">Quantidades e Valores</CardTitle>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">Defina a quantidade e valor unitário do item</p>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <div className="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                    <div className="bg-slate-50 dark:bg-slate-600 p-4 rounded-lg border border-slate-200 dark:border-slate-500">
                       <div className="flex items-center space-x-2 mb-2">
                         <Package className="h-4 w-4 text-slate-600" />
-                        <span className="font-medium text-slate-800">{currentItem.codigo}</span>
+                        <span className="font-medium text-slate-800 dark:text-white">{currentItem.codigo}</span>
                       </div>
-                      <p className="text-sm text-slate-600">{currentItem.descricao}</p>
+                      <p className="text-sm text-slate-600 dark:text-slate-300">{currentItem.descricao}</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <Label htmlFor="quantidade" className="text-sm font-semibold text-slate-700">
+                        <Label htmlFor="quantidade" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                           Quantidade *
                         </Label>
                         <Input
@@ -819,13 +869,13 @@ export default function CadastroDID() {
                           step="0.01"
                           value={currentItem.quantidade || ''}
                           onChange={(e) => handleItemChange('quantidade', parseFloat(e.target.value) || 0)}
-                          className="h-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20"
+                          className="h-12 border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 dark:bg-slate-600 dark:text-white"
                           placeholder="0,00"
                         />
                       </div>
 
                       <div className="space-y-2">
-                        <Label htmlFor="valorUnitario" className="text-sm font-semibold text-slate-700">
+                        <Label htmlFor="valorUnitario" className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                           Valor Unitário (R$) *
                         </Label>
                         <Input
@@ -835,22 +885,22 @@ export default function CadastroDID() {
                           step="0.01"
                           value={currentItem.valorUnitario || ''}
                           onChange={(e) => handleItemChange('valorUnitario', parseFloat(e.target.value) || 0)}
-                          className="h-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20"
+                          className="h-12 border-slate-300 dark:border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 dark:bg-slate-600 dark:text-white"
                           placeholder="0,00"
                         />
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border border-blue-200">
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 p-6 rounded-lg border border-blue-200 dark:border-blue-700">
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="text-sm text-blue-700 mb-1">Valor Total do Item</p>
+                          <p className="text-sm text-blue-700 dark:text-blue-300 mb-1">Valor Total do Item</p>
                           <p className="text-xs text-blue-600">
                             {currentItem.quantidade || 0} {currentItem.unidade || 'UN'} × {formatCurrencyDisplay(currentItem.valorUnitario || 0)}
                           </p>
                         </div>
                         <div className="text-right">
-                          <p className="text-2xl font-bold text-blue-800">
+                          <p className="text-2xl font-bold text-blue-800 dark:text-blue-200">
                             {formatCurrencyDisplay(currentItem.valorTotal || 0)}
                           </p>
                         </div>
@@ -861,50 +911,50 @@ export default function CadastroDID() {
               )}
 
               {currentItemStep === 3 && (
-                <Card className="border-0 shadow-sm">
+                <Card className="border-0 shadow-sm dark:bg-slate-700">
                   <CardHeader>
-                    <CardTitle className="text-lg text-slate-800">Confirmação do Item</CardTitle>
-                    <p className="text-sm text-slate-600">Revise as informações antes de adicionar o item</p>
+                    <CardTitle className="text-lg text-slate-800 dark:text-white">Confirmação do Item</CardTitle>
+                    <p className="text-sm text-slate-600 dark:text-slate-300">Revise as informações antes de adicionar o item</p>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <div className="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                    <div className="bg-slate-50 dark:bg-slate-600 p-6 rounded-lg border border-slate-200 dark:border-slate-500">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-3">
                           <div>
                             <p className="text-xs text-slate-500 uppercase tracking-wide">Código</p>
-                            <p className="font-medium text-slate-800">{currentItem.codigo}</p>
+                            <p className="font-medium text-slate-800 dark:text-white">{currentItem.codigo}</p>
                           </div>
                           <div>
                             <p className="text-xs text-slate-500 uppercase tracking-wide">Unidade</p>
-                            <p className="font-medium text-slate-800">{currentItem.unidade}</p>
+                            <p className="font-medium text-slate-800 dark:text-white">{currentItem.unidade}</p>
                           </div>
                           <div>
                             <p className="text-xs text-slate-500 uppercase tracking-wide">Quantidade</p>
-                            <p className="font-medium text-slate-800">{currentItem.quantidade}</p>
+                            <p className="font-medium text-slate-800 dark:text-white">{currentItem.quantidade}</p>
                           </div>
                         </div>
                         <div className="space-y-3">
                           <div>
                             <p className="text-xs text-slate-500 uppercase tracking-wide">Valor Unitário</p>
-                            <p className="font-medium text-slate-800">{formatCurrencyDisplay(currentItem.valorUnitario || 0)}</p>
+                            <p className="font-medium text-slate-800 dark:text-white">{formatCurrencyDisplay(currentItem.valorUnitario || 0)}</p>
                           </div>
                           <div>
                             <p className="text-xs text-slate-500 uppercase tracking-wide">Valor Total</p>
-                            <p className="text-xl font-bold text-blue-600">{formatCurrencyDisplay(currentItem.valorTotal || 0)}</p>
+                            <p className="text-xl font-bold text-blue-600 dark:text-blue-400">{formatCurrencyDisplay(currentItem.valorTotal || 0)}</p>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="mt-4 pt-4 border-t border-slate-200">
+                      <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-500">
                         <p className="text-xs text-slate-500 uppercase tracking-wide mb-2">Descrição</p>
-                        <p className="text-sm text-slate-700">{currentItem.descricao}</p>
+                        <p className="text-sm text-slate-700 dark:text-slate-300">{currentItem.descricao}</p>
                       </div>
                     </div>
 
-                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                    <div className="bg-green-50 dark:bg-green-900/20 p-4 rounded-lg border border-green-200 dark:border-green-700">
                       <div className="flex items-start space-x-3">
                         <Check className="h-5 w-5 text-green-600 mt-0.5" />
-                        <div className="text-sm text-green-800">
+                        <div className="text-sm text-green-800 dark:text-green-200">
                           <p className="font-medium mb-1">Pronto para adicionar!</p>
                           <p>Clique em Adicionar Item para incluir este item na lista do DID.</p>
                         </div>
@@ -916,7 +966,7 @@ export default function CadastroDID() {
             </div>
 
             {/* Navigation Buttons */}
-            <div className="flex justify-between items-center mt-8 pt-6 border-t border-slate-200">
+            <div className="flex justify-between items-center mt-8 pt-6 border-t border-slate-200 dark:border-slate-600">
               <div className="flex space-x-3">
                 <Button
                   variant="outline"
@@ -979,6 +1029,7 @@ export default function CadastroDID() {
           </div>
         </DialogContent>
       </Dialog>
+      <Toaster />
     </div>
   );
 }
