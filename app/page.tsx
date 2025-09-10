@@ -14,7 +14,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { Toaster } from "@/components/ui/sonner"
+import { Toaster } from "@/components/ui/sonner";
+import { Bell } from "lucide-react";
+import Header from "@/components/ui/Header";
 
 
 interface Item {
@@ -26,6 +28,7 @@ interface Item {
   valorUnitario: number;
   valorTotal: number;
 }
+
 
 export default function CadastroDID() {
   const [date, setDate] = useState<Date>();
@@ -135,29 +138,42 @@ export default function CadastroDID() {
   };
 
   return (
+    
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      {/* Header */}
-      <div className="bg-white shadow-sm border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="p-2 bg-blue-600 rounded-lg">
-                <FileText className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-slate-900">FluxusWeb</h1>
-                <p className="text-sm text-slate-600">Cadastro de Documento de Despesa (DID)</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2 text-sm text-slate-600">
-              <span>Exercício 2025</span>
-              <div className="w-1 h-1 bg-slate-400 rounded-full"></div>
-              <span>Suporte Grupo S&S</span>
-            </div>
-          </div>
+{/* Header */}
+<div className="bg-white shadow-sm border-b border-slate-200">
+  <div className="max-w-7xl mx-auto px-6 py-4">
+    <div className="flex items-center justify-between">
+      {/* Logo e Título */}
+      <div className="flex items-center space-x-3">
+        <div className="p-2 bg-blue-600 rounded-lg">
+          <FileText className="h-6 w-6 text-white" />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900">FluxusWeb</h1>
+          <p className="text-sm text-slate-600">PREFEITURA DE BATURITÊ</p>
         </div>
       </div>
-      
+
+      {/* Informações do Usuário e Notificações */}
+      <div className="flex items-center space-x-4">
+        <div className="flex flex-col text-sm text-slate-600">
+          <span>Exercício 2025</span>
+          <span>Bem vindo, (usuário)</span>
+        </div>
+
+        {/* Ícone de Notificação */}
+        <div className="relative">
+  <Bell className="h-6 w-6 text-slate-600" />
+  <span className="absolute -top-2 -right-2 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-red-500 rounded-full">
+    5
+  
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="mb-8">
