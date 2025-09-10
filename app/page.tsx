@@ -14,6 +14,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Badge } from '@/components/ui/badge';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
+import { Toaster } from "@/components/ui/sonner"
+
 
 interface Item {
   id: string;
@@ -43,6 +45,7 @@ export default function CadastroDID() {
     valorDID: '',
     descricao: ''
   });
+  
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -80,6 +83,7 @@ export default function CadastroDID() {
       setCurrentStep(1);
     }
   };
+  const unidades = ['0501', '0201', '0801'];
 
   const removeItem = (id: string) => {
     setItems(prev => prev.filter(item => item.id !== id));
@@ -141,7 +145,7 @@ export default function CadastroDID() {
                 <FileText className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-900">Sistema de Gestão</h1>
+                <h1 className="text-2xl font-bold text-slate-900">FluxusWeb</h1>
                 <p className="text-sm text-slate-600">Cadastro de Documento de Despesa (DID)</p>
               </div>
             </div>
@@ -153,6 +157,7 @@ export default function CadastroDID() {
           </div>
         </div>
       </div>
+      
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="mb-8">
@@ -218,21 +223,44 @@ export default function CadastroDID() {
                     <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                   </div>
                 </div>
+                <div className="space-y-2">
+  <Label htmlFor="valorDID" className="text-sm font-semibold text-slate-700">
+    Valor do DID (Caso não possua contrato)
+  </Label>
+  <div className="relative">
+    <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+    <Input
+      id="valorDID"
+      type="number"
+      value={formData.valorDID}
+      onChange={(e) => handleInputChange('valorDID', e.target.value)}
+      className="h-12 pl-10 pr-10 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20"
+      placeholder="Insira o valor do DID"
+    />
+    <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
+  </div>
+</div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-2">
-                    <Label className="text-sm font-semibold text-slate-700">Modalidade</Label>
-                    <Select value={formData.modalidade}>
-                      <SelectTrigger className="h-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Global">Global</SelectItem>
-                        <SelectItem value="Parcial">Parcial</SelectItem>
-                        <SelectItem value="Específica">Específica</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+                
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <div className="space-y-2">
+    <Label className="text-sm font-semibold text-slate-700">Modalidade</Label>
+    <Select
+      value={formData.modalidade}
+      onValueChange={(value) => handleInputChange('modalidade', value)} // <-- atualiza o estado
+    >
+      <SelectTrigger className="h-12 border-slate-300 focus:border-blue-500 focus:ring-blue-500/20">
+        <SelectValue placeholder="Selecione a modalidade" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="Global">Global</SelectItem>
+        <SelectItem value="Parcial">Ordinário</SelectItem>
+        <SelectItem value="Específica">Estimativo</SelectItem>
+      </SelectContent>
+    </Select>
+  </div>
+</div>
 
                   <div className="space-y-2">
                     <Label htmlFor="contrato" className="text-sm font-semibold text-slate-700">
@@ -249,7 +277,6 @@ export default function CadastroDID() {
                       <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                     </div>
                   </div>
-                </div>
               </CardContent>
             </Card>
 
@@ -316,6 +343,33 @@ export default function CadastroDID() {
               </CardContent>
             </Card>
 
+            {/* Descrição */}
+            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center space-x-2 text-slate-800">
+                  <FileText className="h-5 w-5 text-blue-600" />
+                  <span>Descrição da Despesa</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <Label htmlFor="descricao" className="text-sm font-semibold text-slate-700">
+                    Valor a ser empenhado para atender despesas com: *
+                  </Label>
+                  <Textarea
+                    id="descricao"
+                    value={formData.descricao}
+                    onChange={(e) => handleInputChange('descricao', e.target.value)}
+                    className="min-h-[120px] border-slate-300 focus:border-blue-500 focus:ring-blue-500/20 resize-none"
+                    placeholder="Descreva detalhadamente o objeto da despesa..."
+                  />
+                  <div className="text-xs text-slate-500 mt-1">
+                    {formData.descricao.length}/1000 caracteres
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Itens do DID */}
             <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
               <CardHeader className="pb-4">
@@ -377,38 +431,12 @@ export default function CadastroDID() {
                 )}
               </CardContent>
             </Card>
-            {/* Descrição */}
-            <Card className="shadow-lg border-0 bg-white/80 backdrop-blur-sm">
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center space-x-2 text-slate-800">
-                  <FileText className="h-5 w-5 text-blue-600" />
-                  <span>Descrição da Despesa</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <Label htmlFor="descricao" className="text-sm font-semibold text-slate-700">
-                    Valor a ser empenhado para atender despesas com: *
-                  </Label>
-                  <Textarea
-                    id="descricao"
-                    value={formData.descricao}
-                    onChange={(e) => handleInputChange('descricao', e.target.value)}
-                    className="min-h-[120px] border-slate-300 focus:border-blue-500 focus:ring-blue-500/20 resize-none"
-                    placeholder="Descreva detalhadamente o objeto da despesa..."
-                  />
-                  <div className="text-xs text-slate-500 mt-1">
-                    {formData.descricao.length}/1000 caracteres
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+        </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <div className="space-y-6 lg:sticky lg:top-6">
             {/* Resumo Financeiro */}
-            <Card className="shadow-lg border-0 bg-gradient-to-br from-blue-600 to-blue-700 text-white">
+              <Card className="shadow-lg border-0 bg-gradient-to-br from-blue-600 to-blue-700 text-white">
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center space-x-2">
                   <DollarSign className="h-5 w-5" />
@@ -511,13 +539,11 @@ export default function CadastroDID() {
           </Button>
           <Button 
             className="h-12 px-8 bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition-all duration-200"
-          >
-            Salvar o DID
+          > Salvar o DID
           </Button>
         </div>
       </div>
-
-      {/* Modal de Inclusão de Itens */}
+ {/* Modal de Inclusão de Itens */}
       <Dialog open={showItemsModal} onOpenChange={setShowItemsModal}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -801,7 +827,7 @@ export default function CadastroDID() {
                   <Button
                     onClick={() => {
                       addItem();
-                      setShowItemsModal(false);
+                     resetItemForm();
                     }}
                     className="h-10 px-6 bg-green-600 hover:bg-green-700"
                   >
