@@ -655,7 +655,7 @@ export default function CadastroDID() {
             {/* Sidebar - Resumo */}
             <div className="space-y-6 lg:sticky lg:top-6">
               {/* Resumo do DID */}
-              <Card className="shadow-lg border-0 bg-gradient-to-br from-green-600 to-green-700 text-white dark:from-green-700 dark:to-green-800">
+              <Card className="shadow-lg border-0 bg-card p-4 rounded-lg border">
                 <CardHeader className="pb-4">
                   <CardTitle className="flex items-center space-x-2">
                     <FileText className="h-5 w-5" />
@@ -665,20 +665,20 @@ export default function CadastroDID() {
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="text-green-100">Processo:</span>
+                      <span className="text-muted-foreground">Processo:</span>
                       <span className="font-bold">{formData.processo || '-'}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-green-100">Fornecedor:</span>
+                      <span className="text-muted-foreground">Fornecedor:</span>
                       <span className="font-bold text-sm">{formData.fornecedor || '-'}</span>
                     </div>
-                    <div className="w-full h-px bg-green-400"></div>
+                    <div className="w-full h-px bg-slate-300 dark:bg-slate-600"></div>
                     <div className="flex justify-between items-center">
-                      <span className="text-green-100">Total de Itens:</span>
+                      <span className="text-muted-foreground">Total de Itens:</span>
                       <span className="font-bold text-xl">{items.length}</span>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-green-100">Valor Total:</span>
+                      <span className="text-muted-foreground">Valor Total:</span>
                       <span className="font-bold text-xl">{formatCurrencyDisplay(getTotalItems())}</span>
                     </div>
                   </div>
